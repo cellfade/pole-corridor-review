@@ -84,7 +84,7 @@ button { color: inherit; }
 .pole-copy span { color: var(--muted); font-size: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .row-check { color: var(--green); }
 
-.spatial-stage { min-width: 0; min-height: 0; position: relative; overflow: hidden; background-color: #dbe4e8; background-image: url('/assets/lehi-corridor-background.png'); background-size: cover; background-position: center center; }
+.spatial-stage { min-width: 0; min-height: 0; position: relative; overflow: hidden; background: #c7d8dc; }
 .pole-canvas { width: 100% !important; height: 100% !important; display: block; touch-action: none; }
 .world-pole-label { display: inline-flex; padding: 3px 6px; border-radius: 3px; color: #fff; background: rgba(26,30,44,.83); font-size: 11px; font-weight: 700; box-shadow: 0 1px 3px rgba(0,0,0,.2); white-space: nowrap; }
 .world-pole-label.selected { color: #20242e; background: var(--orange); }

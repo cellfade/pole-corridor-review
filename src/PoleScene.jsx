@@ -5,6 +5,7 @@ import {
   Line,
   OrbitControls,
   PerspectiveCamera,
+  Sky,
 } from "@react-three/drei";
 import * as THREE from "three";
 
@@ -15,6 +16,39 @@ const POLE_POSITIONS = [
   [0, 4],
   [0.45, 16],
   [1.1, 28],
+];
+
+const HOUSE_SITES = [
+  { position: [8.8, 0, -31], rotation: 0.08, tone: "#d8d2c8", roof: "#5d6265" },
+  { position: [9.8, 0, -18], rotation: -0.05, tone: "#c7d0cf", roof: "#596067" },
+  { position: [8.2, 0, -4], rotation: 0.04, tone: "#dfd8ca", roof: "#655f59" },
+  { position: [10.4, 0, 11], rotation: -0.08, tone: "#c9d3d8", roof: "#59636b" },
+  { position: [8.7, 0, 25], rotation: 0.06, tone: "#d5cabd", roof: "#665e56" },
+  { position: [-17.3, 0, -27], rotation: Math.PI + 0.08, tone: "#c9d1c5", roof: "#56605a" },
+  { position: [-16.5, 0, -10], rotation: Math.PI - 0.04, tone: "#d8d1c4", roof: "#635e58" },
+  { position: [-18.1, 0, 8], rotation: Math.PI + 0.06, tone: "#c6d0d6", roof: "#565f66" },
+  { position: [-16.8, 0, 25], rotation: Math.PI - 0.08, tone: "#dad5ca", roof: "#625d58" },
+];
+
+const TREE_SITES = [
+  [-1.1, 0, -38, 1.05], [4.4, 0, -34, 1.2], [13.5, 0, -27, 0.92],
+  [-11.4, 0, -34, 1.15], [-13.7, 0, -21, 0.88], [4.2, 0, -22, 1.05],
+  [13.1, 0, -15, 1.18], [-12.4, 0, -4, 1], [4.7, 0, -7, 0.88],
+  [13.6, 0, 1, 1.08], [-12.2, 0, 10, 1.15], [4.4, 0, 9, 0.96],
+  [14.2, 0, 18, 1.12], [-13.3, 0, 23, 0.94], [4.8, 0, 22, 1.08],
+  [-11.8, 0, 36, 1.2], [4.1, 0, 36, 0.9], [14.4, 0, 34, 1.05],
+];
+
+const MOUNTAINS = [
+  [-58, 4, -74, 34, 28, "#6f7f7a"],
+  [-25, 2, -88, 42, 35, "#7a8982"],
+  [12, 3, -92, 38, 31, "#687a76"],
+  [49, 4, -78, 44, 36, "#72827b"],
+  [72, 5, -48, 31, 26, "#819087"],
+  [-68, 3, 67, 36, 27, "#77877f"],
+  [-31, 2, 84, 43, 33, "#697b76"],
+  [16, 3, 91, 40, 32, "#75867e"],
+  [57, 4, 73, 35, 28, "#829087"],
 ];
 
 function Wire({ start, end, height, color = "#2d3138", sag = 0.7, radius = 0.028 }) {
@@ -109,44 +143,171 @@ function Pole({ position, selected, index }) {
   );
 }
 
-function Tree({ position, scale = 1 }) {
+function Tree({ position, scale = 1, hue = 0 }) {
   return (
     <group position={position} scale={scale}>
       <mesh castShadow position={[0, 1.25, 0]}>
-        <cylinderGeometry args={[0.13, 0.2, 2.5, 10]} />
+        <cylinderGeometry args={[0.13, 0.22, 2.5, 8]} />
         <meshStandardMaterial color="#6b4e35" roughness={1} />
       </mesh>
       <mesh castShadow position={[0, 3.1, 0]}>
         <icosahedronGeometry args={[1.35, 1]} />
-        <meshStandardMaterial color="#46684c" roughness={0.95} />
+        <meshStandardMaterial color={hue % 2 ? "#4f7450" : "#46684c"} roughness={0.95} flatShading />
       </mesh>
       <mesh castShadow position={[0.45, 2.7, 0.15]}>
         <icosahedronGeometry args={[0.9, 1]} />
-        <meshStandardMaterial color="#537753" roughness={0.98} />
+        <meshStandardMaterial color={hue % 3 ? "#5e8056" : "#567a52"} roughness={0.98} flatShading />
       </mesh>
     </group>
   );
 }
 
-function House({ position, tone = "#d7d3ca" }) {
+function House({ position, rotation = 0, tone = "#d7d3ca", roof = "#666a6b" }) {
   return (
-    <group position={position}>
+    <group position={position} rotation={[0, rotation, 0]}>
+      <mesh receiveShadow position={[0, 0.12, 0]}>
+        <boxGeometry args={[6.6, 0.24, 6.8]} />
+        <meshStandardMaterial color="#aeb4a7" roughness={1} />
+      </mesh>
       <mesh castShadow receiveShadow position={[0, 1.4, 0]}>
         <boxGeometry args={[4.8, 2.8, 4.2]} />
         <meshStandardMaterial color={tone} roughness={0.9} />
       </mesh>
       <mesh castShadow position={[0, 3.1, 0]} rotation={[0, Math.PI / 4, 0]}>
         <coneGeometry args={[3.6, 1.8, 4]} />
-        <meshStandardMaterial color="#666a6b" roughness={0.9} />
+        <meshStandardMaterial color={roof} roughness={0.9} flatShading />
       </mesh>
       <mesh position={[-1.25, 1.45, -2.12]}>
         <planeGeometry args={[0.9, 1.1]} />
-        <meshStandardMaterial color="#9fc4dd" roughness={0.3} metalness={0.1} />
+        <meshStandardMaterial color="#a9c9d9" roughness={0.3} metalness={0.1} />
       </mesh>
       <mesh position={[1.15, 1.1, -2.13]}>
         <planeGeometry args={[1.2, 2]} />
         <meshStandardMaterial color="#624b39" roughness={0.8} />
       </mesh>
+      <mesh castShadow position={[2.7, 1.05, 0.65]}>
+        <boxGeometry args={[2.2, 2.1, 2.9]} />
+        <meshStandardMaterial color={tone} roughness={0.92} />
+      </mesh>
+      <mesh position={[2.71, 1.05, -0.82]}>
+        <planeGeometry args={[1.65, 1.45]} />
+        <meshStandardMaterial color="#858d91" roughness={0.7} />
+      </mesh>
+    </group>
+  );
+}
+
+function Terrain() {
+  const geometry = useMemo(() => {
+    const terrain = new THREE.PlaneGeometry(220, 190, 28, 24);
+    const positions = terrain.attributes.position;
+
+    for (let index = 0; index < positions.count; index += 1) {
+      const x = positions.getX(index);
+      const z = positions.getY(index);
+      const distanceFromCorridor = Math.max(0, Math.abs(x + 3) - 20);
+      const edgeLift = Math.pow(distanceFromCorridor / 78, 1.45) * 7.5;
+      const rolling = distanceFromCorridor > 0
+        ? (Math.sin(x * 0.11) + Math.cos(z * 0.085) + Math.sin((x + z) * 0.055)) * 0.7
+        : 0;
+      positions.setZ(index, Math.max(0, edgeLift + rolling));
+    }
+
+    terrain.computeVertexNormals();
+    return terrain;
+  }, []);
+
+  useEffect(() => () => geometry.dispose(), [geometry]);
+
+  return (
+    <mesh geometry={geometry} rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.08, 0]} receiveShadow>
+      <meshStandardMaterial color="#77906d" roughness={1} flatShading />
+    </mesh>
+  );
+}
+
+function RoadCorridor() {
+  return (
+    <group>
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[-5.45, 0.015, 0]} receiveShadow>
+        <planeGeometry args={[7.8, 146]} />
+        <meshStandardMaterial color="#50575a" roughness={0.96} />
+      </mesh>
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[-0.86, 0.055, 0]} receiveShadow>
+        <planeGeometry args={[1.25, 146]} />
+        <meshStandardMaterial color="#b8b8ae" roughness={0.98} />
+      </mesh>
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[-10.03, 0.055, 0]} receiveShadow>
+        <planeGeometry args={[1.25, 146]} />
+        <meshStandardMaterial color="#b8b8ae" roughness={0.98} />
+      </mesh>
+      <mesh position={[-1.55, 0.11, 0]} castShadow receiveShadow>
+        <boxGeometry args={[0.17, 0.22, 146]} />
+        <meshStandardMaterial color="#d5d2c7" roughness={0.95} />
+      </mesh>
+      <mesh position={[-9.35, 0.11, 0]} castShadow receiveShadow>
+        <boxGeometry args={[0.17, 0.22, 146]} />
+        <meshStandardMaterial color="#d5d2c7" roughness={0.95} />
+      </mesh>
+      {Array.from({ length: 18 }, (_, index) => (
+        <mesh key={index} position={[-5.45, 0.045, -68 + index * 8]} receiveShadow>
+          <boxGeometry args={[0.12, 0.025, 3.8]} />
+          <meshStandardMaterial color="#e9c968" roughness={0.8} />
+        </mesh>
+      ))}
+      {[-34, -18, -2, 14, 30].map((z, index) => (
+        <mesh key={z} rotation={[-Math.PI / 2, 0, 0]} position={[index % 2 ? -13 : 3.1, 0.035, z]} receiveShadow>
+          <planeGeometry args={[6.9, 3.2]} />
+          <meshStandardMaterial color="#8f9690" roughness={1} />
+        </mesh>
+      ))}
+    </group>
+  );
+}
+
+function ParkedCar({ position, color = "#778792", rotation = 0 }) {
+  return (
+    <group position={position} rotation={[0, rotation, 0]}>
+      <mesh castShadow position={[0, 0.42, 0]}>
+        <boxGeometry args={[1.55, 0.55, 3.3]} />
+        <meshStandardMaterial color={color} roughness={0.58} metalness={0.18} />
+      </mesh>
+      <mesh castShadow position={[0, 0.86, -0.18]}>
+        <boxGeometry args={[1.28, 0.52, 1.7]} />
+        <meshStandardMaterial color="#a9c0c9" roughness={0.28} metalness={0.12} />
+      </mesh>
+      {[[-0.82, 0.2, -1.05], [0.82, 0.2, -1.05], [-0.82, 0.2, 1.05], [0.82, 0.2, 1.05]].map((wheel) => (
+        <mesh key={wheel.join("-")} position={wheel} rotation={[0, 0, Math.PI / 2]} castShadow>
+          <cylinderGeometry args={[0.28, 0.28, 0.2, 12]} />
+          <meshStandardMaterial color="#24292c" roughness={0.9} />
+        </mesh>
+      ))}
+    </group>
+  );
+}
+
+function MountainRange() {
+  return MOUNTAINS.map(([x, y, z, radius, height, color], index) => (
+    <mesh key={`${x}-${z}`} position={[x, y, z]} rotation={[0, index * 0.37, 0]} receiveShadow>
+      <coneGeometry args={[radius, height, 7]} />
+      <meshStandardMaterial color={color} roughness={1} flatShading />
+    </mesh>
+  ));
+}
+
+function LowPolyEnvironment() {
+  return (
+    <group>
+      <Terrain />
+      <RoadCorridor />
+      {HOUSE_SITES.map((site) => <House key={site.position.join("-")} {...site} />)}
+      {TREE_SITES.map(([x, y, z, scale], index) => (
+        <Tree key={`${x}-${z}`} position={[x, y, z]} scale={scale} hue={index} />
+      ))}
+      <ParkedCar position={[-7.1, 0, -12]} color="#8a5550" />
+      <ParkedCar position={[-3.85, 0, 17]} color="#718798" rotation={Math.PI} />
+      <ParkedCar position={[-6.9, 0, 38]} color="#d0c8b8" />
+      <MountainRange />
     </group>
   );
 }
@@ -278,8 +439,10 @@ function World({ activeIndex, setActiveIndex, menuOpen, setMenuOpen, onAction, a
 
   return (
     <>
-      <hemisphereLight intensity={1.25} color="#e9f6ff" groundColor="#53624b" />
-      <directionalLight castShadow position={[10, 18, 8]} intensity={2.1} color="#fff2da" shadow-mapSize-width={2048} shadow-mapSize-height={2048} shadow-camera-far={70} shadow-camera-left={-26} shadow-camera-right={26} shadow-camera-top={30} shadow-camera-bottom={-30} />
+      <Sky distance={360} sunPosition={[48, 26, -72]} turbidity={4.2} rayleigh={1.35} mieCoefficient={0.004} mieDirectionalG={0.82} />
+      <fog attach="fog" args={["#c7d8dc", 78, 205]} />
+      <hemisphereLight intensity={1.35} color="#eaf7ff" groundColor="#5a654f" />
+      <directionalLight castShadow position={[24, 32, 14]} intensity={2.25} color="#fff1d8" shadow-mapSize-width={2048} shadow-mapSize-height={2048} shadow-camera-far={100} shadow-camera-left={-38} shadow-camera-right={38} shadow-camera-top={42} shadow-camera-bottom={-42} />
 
       <PerspectiveCamera makeDefault fov={46} near={0.1} far={250} position={[10.5, 9.3, 20.8]} />
       <OrbitControls
@@ -288,7 +451,7 @@ function World({ activeIndex, setActiveIndex, menuOpen, setMenuOpen, onAction, a
         enableDamping
         dampingFactor={0.075}
         minDistance={7}
-        maxDistance={28}
+        maxDistance={36}
         minPolarAngle={0.52}
         maxPolarAngle={1.48}
         screenSpacePanning={false}
@@ -296,10 +459,7 @@ function World({ activeIndex, setActiveIndex, menuOpen, setMenuOpen, onAction, a
       />
       <CameraDirector activeIndex={activeIndex} resetToken={resetToken} controlsRef={controlsRef} />
 
-      <mesh receiveShadow rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.04, 0]}>
-        <planeGeometry args={[120, 150]} />
-        <shadowMaterial transparent opacity={0.15} />
-      </mesh>
+      <LowPolyEnvironment />
 
       {POLE_POSITIONS.map((position, index) => (
         <Pole key={index} position={position} index={index} selected={index === activeIndex} />

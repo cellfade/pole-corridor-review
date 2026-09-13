@@ -4,16 +4,16 @@
 
 - Source visual truth: `reference/pole-corridor-option-1.png`
 - Source pixels: 1487 x 1058
-- Implementation screenshot: `qa/implementation-desktop-approved.png`
-- Implementation pixels and CSS viewport: 1440 x 1024 at browser screenshot density
-- Normalization: source resized to 1440 x 1024; implementation preserved at 1440 x 1024
-- Combined comparison: `qa/compare-desktop-final.png`
+- Implementation screenshot: `qa/implementation-3d-environment-reference-size.png`
+- Implementation pixels and CSS viewport: 1487 x 1058 at browser screenshot density
+- Normalization: source and implementation preserved at 1487 x 1058
+- Combined comparison: `qa/compare-3d-environment.png`
 - State: Pole 104 selected, 3D active, radial menu open, inspector visible
-- Responsive evidence: `qa/implementation-mobile-approved.png`, 390 x 844
+- Responsive evidence: `qa/implementation-3d-environment-mobile.png`, 390 x 844
 
 ## Full-View Comparison Evidence
 
-The combined comparison preserves the source composition: a 52px charcoal header, slim six-pole rail, dominant spatial canvas, 348px evidence inspector, vertex-centered radial actions, lower corridor navigator, right-side orientation tools, and lower-right minimap. The implementation intentionally replaces the concept's static photoreal pole with a live Three.js pole and wire corridor over a purpose-made photographic background plate.
+The combined comparison preserves the source composition: a 52px charcoal header, slim six-pole rail, dominant spatial canvas, 348px evidence inspector, vertex-centered radial actions, lower corridor navigator, right-side orientation tools, and lower-right minimap. The implementation now places the pole corridor inside a complete low-poly Three.js environment instead of compositing live geometry over a static photographic plate. Photorealism intentionally gives way to honest spatial depth and visible parallax in this iteration.
 
 ## Focused Comparison Evidence
 
@@ -21,7 +21,7 @@ The combined comparison preserves the source composition: a 52px charcoal header
 - Corridor rail: six repeated pole rows, continuous route rail, status markers, thumbnails, and orange selected row match the source anatomy.
 - Vertex menu: five actions remain anchored to the selected 3D point and use the source's dark circular actions, white borders, orange center, green accept, and red flag semantics.
 - Inspector: title, AI confidence, source image, grouped attributes, measurements, source thumbnails, and action hierarchy match the source content order.
-- Spatial aids: constrained orbit, frame/reset, compass, minimap, previous/next controls, measurement line, and ground capture points remain visible without displacing the canvas.
+- Spatial aids: constrained orbit, frame/reset, compass, minimap, previous/next controls, measurement line, and ground capture points remain visible without displacing the canvas. Road, curbs, terrain, homes, trees, parked vehicles, and foothills share the same camera and respond to orbiting.
 
 ## Required Fidelity Surfaces
 
@@ -39,7 +39,7 @@ The implementation consistently uses charcoal `#1A1E2C`, orange `#FF9239`, PoleP
 
 ### Image Quality And Asset Fidelity
 
-The photographic corridor plate was generated specifically for the scene and is sharp at the desktop viewport. Official IKE Office screenshots ground source-image thumbnails and the minimap. The live utility geometry is rendered with Three.js rather than substituted with static artwork. Canvas pixel checks returned channel standard deviations of `[56.75, 68.34, 95.40]` on desktop and `[72.44, 63.34, 73.87]` on mobile, confirming visibly varied, nonblank scene output.
+The corridor environment is rendered entirely as live Three.js geometry, including low-poly terrain, roadway, curbs, lane markings, houses, trees, vehicles, foothills, poles, and wires. Official IKE Office screenshots remain limited to evidence thumbnails and the minimap, where imagery is appropriate. The scene is visibly nonblank at desktop and mobile sizes, and the environment maintains depth from multiple orbit angles without a photographic background layer.
 
 ### Copy And Content
 
@@ -50,7 +50,7 @@ Above-the-fold product copy matches the approved concept's job, pole, attachment
 - Map, Satellite, and 3D view controls update the primary work surface.
 - A pole can be selected in the corridor rail or map.
 - `Open 3D` returns to the live spatial scene with the selected pole preserved.
-- Dragging the scene changes the rendered camera view; mean screenshot difference before/after orbit was 37.83 RGB levels.
+- Dragging the scene changes the rendered camera view and reveals correct parallax between the selected pole, adjacent poles, road, buildings, vegetation, vehicles, and terrain.
 - The selected attachment vertex exposes a keyboard-accessible radial menu.
 - Accept updates pole status, inspector state, toast feedback, and review progress from 2/6 to 3/6.
 - Previous/Next and arrow keys change the selected pole and camera target.
@@ -77,13 +77,20 @@ Fixes: preserved the initial open state, widened and repositioned the camera, re
 
 Fixes: added a purpose-made photographic Lehi corridor plate behind the real Three.js geometry, raised mobile panel stacking, and replaced/repositioned the map source crop.
 
+### Iteration 3
+
+- P1: The original live poles and wires moved with the camera, but a photographic CSS background remained fixed and broke the spatial illusion during orbit.
+- P2: The viewer lacked environmental depth cues beyond the utility geometry.
+
+Fixes: removed the CSS background image and added a deterministic low-poly world with terrain elevation, a road and curbs, lane markings, driveways, homes, vegetation, parked vehicles, sky, fog, and distant foothills. Desktop and mobile captures confirm the world remains visible and coherent around the selected pole; an alternate orbit angle confirms environmental parallax.
+
 ### Final Pass
 
-No actionable P0, P1, or P2 findings remain. The simplified mesh detail and layered background wires are acceptable P3 prototype-level deviations that preserve the actual interactive 3D behavior.
+The 3D-environment update intentionally changes the scene from the reference's photographic realism to a low-poly model while preserving the approved interface composition and task flow. No actionable P0, P1, or P2 findings remain. Simplified mesh detail is an acceptable P3 prototype-level deviation because all visible environmental layers now participate in the actual camera space.
 
 ## Follow-Up Polish
 
 - P3: Replace procedural pole geometry with an optimized photogrammetry or glTF pole asset if production-fidelity 3D data becomes available.
-- P3: Add depth-based occlusion between the photographic plate and live geometry when real camera calibration metadata is available.
+- P3: Replace the illustrative corridor with GIS-derived terrain tiles, building footprints, and aerial textures when a production data source and performance budget are known.
 
 final result: passed

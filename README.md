@@ -14,6 +14,7 @@ A working interview prototype exploring how IKE Office could help utility analys
 ## Interaction Principles
 
 - Constrained orbit instead of free-flight navigation.
+- A lightweight low-poly corridor keeps the road, terrain, homes, trees, vehicles, poles, and foothills in the same navigable 3D world.
 - Origin-aware radial actions anchored to the selected asset vertex.
 - Screen-space labels and a persistent inspector connect geometry to source evidence.
 - Map, minimap, compass, previous/next controls, and capture circles preserve orientation.
